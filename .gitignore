@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Virtual environment
+venv/
+.venv/
+
+# Snowflake
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
