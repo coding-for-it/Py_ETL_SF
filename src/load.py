@@ -1,9 +1,29 @@
+import logging
 
 from db import get_connection
 
 
 
+logging.basicConfig(
+
+    filename="logs/etl.log",
+
+    level=logging.INFO,
+
+    format="%(asctime)s - %(levelname)s - %(message)s"
+
+)
+
+
+
+
 def load_data(df):
+
+
+    logging.info(
+        "Loading process started"
+    )
+
 
 
     conn = get_connection()
@@ -12,44 +32,96 @@ def load_data(df):
     cursor = conn.cursor()
 
 
-    for index,row in df.iterrows():
+
+    try:
 
 
-        sql = f"""
+        for index,row in df.iterrows():
 
-        INSERT INTO SALES
 
-        VALUES
+            query = """
 
-        (
+            INSERT INTO SALES
 
-        {row.ORDER_ID},
+            (
+            ORDER_ID,
+            CUSTOMER_NAME,
+            PRODUCT,
+            QUANTITY,
+            PRICE,
+            ORDER_DATE,
+            TOTAL_SALES
+            )
 
-        '{row.CUSTOMER_NAME}',
 
-        '{row.PRODUCT}',
+            VALUES
 
-        {row.QUANTITY},
+            (%s,%s,%s,%s,%s,%s,%s)
 
-        {row.PRICE},
+            """
 
-        '{row.ORDER_DATE}',
 
-        {row.TOTAL_SALES}
+
+            cursor.execute(
+
+                query,
+
+                (
+
+                int(row["ORDER_ID"]),
+
+                row["CUSTOMER_NAME"],
+
+                row["PRODUCT"],
+
+                int(row["QUANTITY"]),
+
+                float(row["PRICE"]),
+
+                row["ORDER_DATE"],
+
+                float(row["TOTAL_SALES"])
+
+                )
+
+            )
+
+
+
+        conn.commit()
+
+
+
+        logging.info(
+
+            "Data loaded into Snowflake successfully"
 
         )
 
-        """
 
-
-        cursor.execute(sql)
-
-
-
-    print("Data Loaded Into Snowflake")
+        print(
+            "Data Loaded Into Snowflake"
+        )
 
 
 
-    cursor.close()
+    except Exception as e:
 
-    conn.close()
+
+        logging.error(
+
+            f"Loading failed: {e}"
+
+        )
+
+
+        raise e
+
+
+
+    finally:
+
+
+        cursor.close()
+
+        conn.close()

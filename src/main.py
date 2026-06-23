@@ -1,3 +1,5 @@
+import logging
+
 
 from extract import extract_data
 
@@ -7,20 +9,73 @@ from load import load_data
 
 
 
-print("ETL Pipeline Started")
+logging.basicConfig(
+
+    filename="logs/etl.log",
+
+    level=logging.INFO,
+
+    format="%(asctime)s - %(levelname)s - %(message)s"
+
+)
 
 
 
-data = extract_data()
+try:
+
+
+    logging.info(
+        "ETL Pipeline Started"
+    )
+
+
+    print(
+        "ETL Pipeline Started"
+    )
 
 
 
-clean_data = transform_data(data)
+    # Extract
+
+    data = extract_data()
 
 
 
-load_data(clean_data)
+    # Transform
+
+    clean_data = transform_data(data)
 
 
 
-print("ETL Pipeline Completed")
+    # Load
+
+    load_data(clean_data)
+
+
+
+    logging.info(
+
+        "ETL Pipeline Completed Successfully"
+
+    )
+
+
+    print(
+
+        "ETL Pipeline Completed"
+
+    )
+
+
+
+except Exception as e:
+
+
+    logging.error(
+
+        f"Pipeline failed: {e}"
+
+    )
+
+
+    print(e)
