@@ -1,5 +1,6 @@
 import os
 import snowflake.connector
+
 from dotenv import load_dotenv
 
 
@@ -7,6 +8,10 @@ load_dotenv()
 
 
 def get_connection():
+
+    print("USER:", os.getenv("SNOWFLAKE_USER"))
+    print("ACCOUNT:", os.getenv("SNOWFLAKE_ACCOUNT"))
+
 
     connection = snowflake.connector.connect(
 

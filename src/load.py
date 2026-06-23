@@ -1,33 +1,16 @@
 import logging
 
-from db import get_connection
+from src.db import get_connection
 
 
-
-logging.basicConfig(
-
-    filename="logs/etl.log",
-
-    level=logging.INFO,
-
-    format="%(asctime)s - %(levelname)s - %(message)s"
-
-)
-
+logger = logging.getLogger()
 
 
 
 def load_data(df):
 
 
-    logging.info(
-        "Loading process started"
-    )
-
-
-
     conn = get_connection()
-
 
     cursor = conn.cursor()
 
@@ -36,23 +19,12 @@ def load_data(df):
     try:
 
 
-        for index,row in df.iterrows():
+        for _, row in df.iterrows():
 
 
             query = """
 
             INSERT INTO SALES
-
-            (
-            ORDER_ID,
-            CUSTOMER_NAME,
-            PRODUCT,
-            QUANTITY,
-            PRICE,
-            ORDER_DATE,
-            TOTAL_SALES
-            )
-
 
             VALUES
 
@@ -68,19 +40,19 @@ def load_data(df):
 
                 (
 
-                int(row["ORDER_ID"]),
+                row.ORDER_ID,
 
-                row["CUSTOMER_NAME"],
+                row.CUSTOMER_NAME,
 
-                row["PRODUCT"],
+                row.PRODUCT,
 
-                int(row["QUANTITY"]),
+                row.QUANTITY,
 
-                float(row["PRICE"]),
+                row.PRICE,
 
-                row["ORDER_DATE"],
+                row.ORDER_DATE,
 
-                float(row["TOTAL_SALES"])
+                row.TOTAL_SALES
 
                 )
 
@@ -92,15 +64,16 @@ def load_data(df):
 
 
 
-        logging.info(
+        logger.info(
 
-            "Data loaded into Snowflake successfully"
+            f"{len(df)} records loaded into Snowflake"
 
         )
 
 
+
         print(
-            "Data Loaded Into Snowflake"
+            "Data Loaded Successfully"
         )
 
 
@@ -108,12 +81,7 @@ def load_data(df):
     except Exception as e:
 
 
-        logging.error(
-
-            f"Loading failed: {e}"
-
-        )
-
+        logger.error(e)
 
         raise e
 
