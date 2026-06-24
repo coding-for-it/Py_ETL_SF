@@ -1,4 +1,3 @@
-```markdown
 # Python + Snowflake Automated ETL Pipeline
 
 ## Overview
@@ -11,58 +10,40 @@ The project demonstrates a complete data engineering workflow where raw CSV data
 
 # Architecture
 
-```
-
+```text
 CSV Data Source
 
-```
-    ↓
-```
+        ↓
 
 Python Extraction Layer
 
-```
-    ↓
-```
+        ↓
 
 Data Validation & Transformation
 
-```
-    ↓
-```
+        ↓
 
 Snowflake Internal Stage
 
-```
-    ↓
-```
+        ↓
 
 COPY INTO Command
 
-```
-    ↓
-```
+        ↓
 
 Raw Table
 
-```
-    ↓
-```
+        ↓
 
 Stored Procedure + Snowflake Task
 
-```
-    ↓
-```
+        ↓
 
 Final Sales Table
 
-```
-    ↓
-```
+        ↓
 
 SQL Analytics
-
 ```
 
 ---
@@ -81,8 +62,7 @@ SQL Analytics
 
 # Project Structure
 
-```
-
+```text
 snowflake_etl_project
 │
 ├── data
@@ -95,7 +75,7 @@ snowflake_etl_project
 │   ├── load.py                   # Load data into Snowflake
 │   ├── logger.py                 # Pipeline logging configuration
 │   ├── main.py                   # ETL pipeline execution
-│   └── **init**.py
+│   └── __init__.py
 │
 ├── tests
 │   ├── test_transform.py         # Transformation testing
@@ -112,7 +92,6 @@ snowflake_etl_project
 ├── pytest.ini                    # Pytest configuration
 ├── requirements.txt
 └── README.md
-
 ```
 
 ---
@@ -125,8 +104,7 @@ The extraction layer reads sales data from CSV files using Pandas.
 
 Process:
 
-```
-
+```text
 sales.csv
 
 ↓
@@ -136,7 +114,6 @@ Pandas DataFrame
 ↓
 
 ETL Processing
-
 ```
 
 Features:
@@ -163,10 +140,8 @@ Implemented operations:
 
 Example:
 
-```
-
+```text
 TOTAL_SALES = QUANTITY × PRICE
-
 ```
 
 This creates a calculated revenue field used for analytics.
@@ -196,8 +171,7 @@ Processed data is loaded into Snowflake tables.
 
 Loading process:
 
-```
-
+```text
 Python DataFrame
 
 ↓
@@ -207,7 +181,6 @@ Snowflake Connection
 ↓
 
 SALES Table
-
 ```
 
 Features:
@@ -223,26 +196,21 @@ Features:
 
 ## Database
 
-```
-
+```text
 ETL_DB
-
 ```
 
 ## Schema
 
-```
-
+```text
 SALES_SCHEMA
-
 ```
 
 ---
 
 # Snowflake Data Flow
 
-```
-
+```text
 CSV File
 
 ↓
@@ -264,7 +232,6 @@ SALES_FINAL
 ↓
 
 Analytics
-
 ```
 
 ---
@@ -295,11 +262,9 @@ Implemented scheduled execution of data loading workflows.
 
 Example:
 
-```
-
+```text
 Task Schedule:
 Every 5 minutes
-
 ```
 
 This reduces manual execution of ETL operations.
@@ -310,21 +275,19 @@ This reduces manual execution of ETL operations.
 
 Database:
 
-```
-
+```text
 ETL_DB
-
 ```
 
 Schema:
 
-```
-
+```text
 SALES_SCHEMA
-
 ```
 
 Tables:
+
+---
 
 ## SALES_RAW
 
@@ -355,11 +318,9 @@ Additional column:
 
 Formula:
 
-```
-
+```text
 TOTAL_SALES = QUANTITY * PRICE
-
-````
+```
 
 ---
 
@@ -411,7 +372,7 @@ Run tests:
 
 ```bash
 pytest
-````
+```
 
 ---
 
@@ -467,7 +428,7 @@ python -m src.main
 
 Pipeline execution:
 
-```
+```text
 Extract Data
 
 ↓
@@ -491,27 +452,22 @@ Generate Analytics
 
 # Key Features
 
-* End-to-end ETL pipeline implementation
-* Python and Snowflake integration
-* Snowflake internal stage implementation
-* COPY INTO data loading
-* Data cleaning and validation
-* Stored procedure based transformation
-* Scheduled Snowflake Task automation
-* SQL analytics layer
-* Logging and error handling
-* Unit testing using Pytest
+- End-to-end ETL pipeline implementation
+- Python and Snowflake integration
+- Snowflake internal stage implementation
+- COPY INTO data loading
+- Data cleaning and validation
+- Stored procedure based transformation
+- Scheduled Snowflake Task automation
+- SQL analytics layer
+- Logging and error handling
+- Unit testing using Pytest
 
 ---
 
 # Future Improvements
 
-* Incremental data processing using Snowflake Streams
-* Cloud storage integration (AWS S3 / Azure Blob)
-* Advanced monitoring and alerting
-* Pipeline performance optimization
-
-```
-
-This README now matches your **actual implementation** and is safe to explain in interviews.
-```
+- Incremental data processing using Snowflake Streams
+- Cloud storage integration (AWS S3 / Azure Blob)
+- Advanced monitoring and alerting
+- Pipeline performance optimization
