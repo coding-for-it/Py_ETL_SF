@@ -1,163 +1,421 @@
-# Python + Snowflake ETL Pipeline
+```markdown
+# Python + Snowflake Automated ETL Pipeline
 
 ## Overview
 
-An end-to-end ETL (Extract, Transform, Load) pipeline built using **Python and Snowflake** to process, transform, and analyze sales data.
+An end-to-end ETL (Extract, Transform, Load) pipeline built using **Python, Pandas, and Snowflake** to process and analyze sales data.
 
-The pipeline extracts raw data from CSV files, performs data cleaning and transformation using Python, validates data quality, loads processed data into Snowflake, and performs SQL-based analytics to generate business insights.
+The project demonstrates a complete data engineering workflow where raw CSV data is extracted, validated, transformed, loaded into Snowflake, automated using Snowflake Tasks, and analyzed using SQL queries to generate business insights.
 
-## Architecture
+---
+
+# Architecture
 
 ```
+
 CSV Data Source
 
-        ↓
+```
+    ↓
+```
+
+Python Extraction Layer
+
+```
+    ↓
+```
+
+Data Validation & Transformation
+
+```
+    ↓
+```
 
 Snowflake Internal Stage
 
-        ↓
+```
+    ↓
+```
 
 COPY INTO Command
 
-        ↓
-
-Raw / Sales Table
-
-        ↓
-
-Python Transformation & Validation
-
-        ↓
-
-Analytics Layer
-
-        ↓
-
-SQL Business Insights
+```
+    ↓
 ```
 
-## Tech Stack
-
-* Python
-* Pandas
-* Snowflake
-* SQL
-* Snowflake Connector for Python
-* Python-dotenv
-
-## Project Structure
+Raw Table
 
 ```
+    ↓
+```
+
+Stored Procedure + Snowflake Task
+
+```
+    ↓
+```
+
+Final Sales Table
+
+```
+    ↓
+```
+
+SQL Analytics
+
+```
+
+---
+
+# Tech Stack
+
+- Python
+- Pandas
+- Snowflake
+- SQL
+- Snowflake Connector for Python
+- Python-dotenv
+- Pytest
+
+---
+
+# Project Structure
+
+```
+
 snowflake_etl_project
 │
 ├── data
-│   └── sales.csv
+│   └── sales.csv                 # Input sales dataset
 │
 ├── src
-│   ├── db.py              # Snowflake connection
-│   ├── extract.py         # Data extraction
-│   ├── transform.py       # Data cleaning and transformation
-│   ├── load.py            # Load data into Snowflake
-│   └── main.py            # ETL pipeline execution
+│   ├── db.py                     # Snowflake connection handling
+│   ├── extract.py                # Extract data from CSV
+│   ├── transform.py              # Data cleaning and validation
+│   ├── load.py                   # Load data into Snowflake
+│   ├── logger.py                 # Pipeline logging configuration
+│   ├── main.py                   # ETL pipeline execution
+│   └── **init**.py
+│
+├── tests
+│   ├── test_transform.py         # Transformation testing
+│   └── test_connection.py        # Snowflake connection testing
 │
 ├── sql
-│   └── analytics.sql      # SQL analytics queries
+│   ├── etl_pipeline.sql          # Snowflake database setup and automation
+│   └── analytics.sql             # Business analytics queries
 │
 ├── logs
-│   └── etl.log            # Execution logs
+│   └── etl.log                   # Pipeline execution logs
 │
-├── .env                   # Snowflake credentials
+├── .env                          # Snowflake credentials
+├── pytest.ini                    # Pytest configuration
 ├── requirements.txt
 └── README.md
+
 ```
 
-## ETL Workflow
+---
 
-### 1. Extract
+# ETL Workflow
 
-* Reads sales data from CSV files using Pandas.
-* Converts raw data into a structured format for processing.
+## 1. Extract
 
-### 2. Transform
+The extraction layer reads sales data from CSV files using Pandas.
 
-Data preprocessing and transformation includes:
+Process:
 
-* Removing duplicate records
-* Handling missing values
-* Creating calculated business metrics
+```
+
+sales.csv
+
+↓
+
+Pandas DataFrame
+
+↓
+
+ETL Processing
+
+```
+
+Features:
+
+- Input file validation
+- Structured data extraction
+- Logging of extraction process
+
+---
+
+# 2. Transform
+
+The transformation layer performs data preprocessing and feature creation.
+
+Implemented operations:
+
+- Missing value detection
+- Missing value handling
+- Duplicate record identification
+- Duplicate removal
+- Data validation
+- Business metric creation
+
 
 Example:
 
 ```
+
 TOTAL_SALES = QUANTITY × PRICE
+
 ```
 
-### 3. Data Quality Validation
+This creates a calculated revenue field used for analytics.
 
-Implemented validation checks:
+---
 
-* Missing value detection
-* Duplicate record identification
-* Pipeline execution logging
+# 3. Data Quality Validation
 
-### 4. Load
+The pipeline includes validation checks before loading data.
 
-* Creates a connection between Python and Snowflake.
-* Loads transformed sales data into Snowflake tables.
-* Stores processed data for analytics.
+Implemented checks:
 
-## Snowflake Database Design
+- Missing value validation
+- Duplicate record detection
+- Required column validation
+- Transformation verification
+
+This ensures only clean data reaches Snowflake.
+
+---
+
+# 4. Load
+
+The loading layer connects Python with Snowflake using the Snowflake Connector.
+
+Processed data is loaded into Snowflake tables.
+
+Loading process:
+
+```
+
+Python DataFrame
+
+↓
+
+Snowflake Connection
+
+↓
+
+SALES Table
+
+```
+
+Features:
+
+- Secure credential management using environment variables
+- Error handling
+- Transaction rollback support
+- Execution logging
+
+---
+
+# Snowflake Implementation
+
+## Database
+
+```
+
+ETL_DB
+
+```
+
+## Schema
+
+```
+
+SALES_SCHEMA
+
+```
+
+---
+
+# Snowflake Data Flow
+
+```
+
+CSV File
+
+↓
+
+Snowflake Internal Stage
+
+↓
+
+COPY INTO SALES_RAW
+
+↓
+
+Stored Procedure Transformation
+
+↓
+
+SALES_FINAL
+
+↓
+
+Analytics
+
+```
+
+---
+
+# Snowflake Features Used
+
+## Internal Stage
+
+Used to store and manage incoming CSV files before ingestion.
+
+---
+
+## COPY INTO
+
+Used for loading staged files into Snowflake tables.
+
+---
+
+## Stored Procedure
+
+Created reusable SQL logic for transforming and loading processed sales data.
+
+---
+
+## Snowflake Task
+
+Implemented scheduled execution of data loading workflows.
+
+Example:
+
+```
+
+Task Schedule:
+Every 5 minutes
+
+```
+
+This reduces manual execution of ETL operations.
+
+---
+
+# Database Design
 
 Database:
 
 ```
+
 ETL_DB
+
 ```
 
 Schema:
 
 ```
+
 SALES_SCHEMA
-```
-
-Table:
 
 ```
-SALES
+
+Tables:
+
+## SALES_RAW
+
+Stores incoming raw data.
+
+Columns:
+
+| Column | Description |
+|---|---|
+| ORDER_ID | Unique order identifier |
+| CUSTOMER_NAME | Customer name |
+| PRODUCT | Product name |
+| QUANTITY | Units purchased |
+| PRICE | Product price |
+| ORDER_DATE | Date of order |
+
+---
+
+## SALES_FINAL
+
+Stores transformed business-ready data.
+
+Additional column:
+
+| Column | Description |
+|---|---|
+| TOTAL_SALES | Revenue generated per order |
+
+Formula:
+
 ```
 
-Table Structure:
+TOTAL_SALES = QUANTITY * PRICE
 
-| Column        | Description              |
-| ------------- | ------------------------ |
-| ORDER_ID      | Unique order identifier  |
-| CUSTOMER_NAME | Customer information     |
-| PRODUCT       | Product name             |
-| QUANTITY      | Quantity purchased       |
-| PRICE         | Product price            |
-| ORDER_DATE    | Order date               |
-| TOTAL_SALES   | Calculated sales revenue |
+````
 
-## Analytics Performed
+---
 
-SQL analytics implemented:
+# SQL Analytics
 
-### Revenue Analysis
+Created SQL queries to generate business insights.
 
-* Total sales revenue calculation
-* Overall business performance analysis
+Analytics performed:
 
-### Product Analysis
+## Revenue Analysis
 
-* Product-wise sales analysis
-* Identification of high-performing products
+- Total revenue calculation
+- Overall sales performance
 
-### Monthly Sales Trends
+---
 
-* Sales analysis based on order dates
-* Business trend evaluation
+## Product Analysis
 
-## Installation & Setup
+- Product-wise revenue
+- Best-performing products
+- Sales ranking
+
+---
+
+## Customer Analysis
+
+- Customer spending analysis
+- Order frequency analysis
+
+---
+
+## Sales Trends
+
+- Monthly revenue trends
+- Business performance analysis
+
+---
+
+# Testing
+
+Implemented unit testing using Pytest.
+
+Test coverage:
+
+- Transformation logic validation
+- Snowflake connection validation
+
+Run tests:
+
+```bash
+pytest
+````
+
+---
+
+# Installation & Setup
 
 Clone repository:
 
@@ -165,7 +423,7 @@ Clone repository:
 git clone <repository-url>
 ```
 
-Navigate to project:
+Navigate:
 
 ```bash
 cd snowflake_etl_project
@@ -177,54 +435,83 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Configure Snowflake credentials in `.env`:
+---
+
+# Environment Configuration
+
+Create `.env` file:
 
 ```env
 SNOWFLAKE_USER=
+
 SNOWFLAKE_PASSWORD=
+
 SNOWFLAKE_ACCOUNT=
+
 SNOWFLAKE_WAREHOUSE=
+
 SNOWFLAKE_DATABASE=
+
 SNOWFLAKE_SCHEMA=
 ```
 
-## Run Pipeline
+---
 
-Execute ETL workflow:
+# Run Pipeline
+
+Execute:
 
 ```bash
-python src/main.py
+python -m src.main
 ```
 
 Pipeline execution:
 
 ```
 Extract Data
-      ↓
+
+↓
+
 Transform Data
-      ↓
+
+↓
+
 Validate Data
-      ↓
+
+↓
+
 Load Into Snowflake
-      ↓
-Run Analytics
+
+↓
+
+Generate Analytics
 ```
 
-## Key Features
+---
 
-- End-to-end ETL pipeline implementation
-- Python and Snowflake integration
-- Snowflake Internal Stage for file ingestion
-- COPY INTO command for bulk data loading
-- Data cleaning and transformation using Pandas
-- Data quality validation checks
-- Error handling and execution logging
-- SQL-based business analytics
+# Key Features
 
-## Future Enhancements
+* End-to-end ETL pipeline implementation
+* Python and Snowflake integration
+* Snowflake internal stage implementation
+* COPY INTO data loading
+* Data cleaning and validation
+* Stored procedure based transformation
+* Scheduled Snowflake Task automation
+* SQL analytics layer
+* Logging and error handling
+* Unit testing using Pytest
 
-- Incremental data loading using Snowflake Streams and Tasks
-- Advanced pipeline monitoring and alerting
-- Workflow orchestration using tools like Apache Airflow
-- Data warehouse optimization and performance tuning
+---
 
+# Future Improvements
+
+* Incremental data processing using Snowflake Streams
+* Cloud storage integration (AWS S3 / Azure Blob)
+* Advanced monitoring and alerting
+* Pipeline performance optimization
+
+```
+
+This README now matches your **actual implementation** and is safe to explain in interviews.
+```
