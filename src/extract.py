@@ -1,10 +1,9 @@
 import pandas as pd
+import logging
 import os
 
-from src.logger import get_logger
 
-
-logger = get_logger()
+logger = logging.getLogger()
 
 
 
@@ -14,27 +13,45 @@ def extract_data():
     file_path = "data/sales.csv"
 
 
-    if not os.path.exists(file_path):
-
-        raise Exception("Sales file not found")
+    try:
 
 
-
-    logger.info(
-        "Reading sales CSV file"
-    )
+        logger.info("Extraction started")
 
 
+        if not os.path.exists(file_path):
 
-    df = pd.read_csv(file_path)
-
-
-
-    logger.info(
-
-        f"Extracted {len(df)} records"
-
-    )
+            raise FileNotFoundError(
+                "Sales CSV file not found"
+            )
 
 
-    return df
+        df = pd.read_csv(file_path)
+
+
+
+        logger.info(
+
+            f"{len(df)} records extracted"
+
+        )
+
+
+        print("Data Extracted")
+
+
+        return df
+
+
+
+    except Exception as e:
+
+
+        logger.error(
+
+            f"Extraction failed: {e}"
+
+        )
+
+
+        raise e

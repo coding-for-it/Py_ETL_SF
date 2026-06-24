@@ -3,6 +3,7 @@ import logging
 from src.db import get_connection
 
 
+
 logger = logging.getLogger()
 
 
@@ -10,27 +11,59 @@ logger = logging.getLogger()
 def load_data(df):
 
 
-    conn = get_connection()
+    conn = None
 
-    cursor = conn.cursor()
-
+    cursor = None
 
 
     try:
 
 
+        logger.info(
+
+            "Loading started"
+
+        )
+
+
+        conn = get_connection()
+
+
+        cursor = conn.cursor()
+
+
+
+        query = """
+
+        INSERT INTO SALES
+
+        (
+
+        ORDER_ID,
+
+        CUSTOMER_NAME,
+
+        PRODUCT,
+
+        QUANTITY,
+
+        PRICE,
+
+        ORDER_DATE,
+
+        TOTAL_SALES
+
+        )
+
+        VALUES
+
+        (%s,%s,%s,%s,%s,%s,%s)
+
+        """
+
+
+
         for _, row in df.iterrows():
-
-
-            query = """
-
-            INSERT INTO SALES
-
-            VALUES
-
-            (%s,%s,%s,%s,%s,%s,%s)
-
-            """
 
 
 
@@ -40,19 +73,19 @@ def load_data(df):
 
                 (
 
-                row.ORDER_ID,
+                row["ORDER_ID"],
 
-                row.CUSTOMER_NAME,
+                row["CUSTOMER_NAME"],
 
-                row.PRODUCT,
+                row["PRODUCT"],
 
-                row.QUANTITY,
+                row["QUANTITY"],
 
-                row.PRICE,
+                row["PRICE"],
 
-                row.ORDER_DATE,
+                row["ORDER_DATE"],
 
-                row.TOTAL_SALES
+                row["TOTAL_SALES"]
 
                 )
 
@@ -66,14 +99,16 @@ def load_data(df):
 
         logger.info(
 
-            f"{len(df)} records loaded into Snowflake"
+            f"{len(df)} records loaded successfully"
 
         )
 
 
 
         print(
+
             "Data Loaded Successfully"
+
         )
 
 
@@ -81,7 +116,15 @@ def load_data(df):
     except Exception as e:
 
 
+
+        if conn:
+
+            conn.rollback()
+
+
+
         logger.error(e)
+
 
         raise e
 
@@ -90,6 +133,13 @@ def load_data(df):
     finally:
 
 
-        cursor.close()
 
-        conn.close()
+        if cursor:
+
+            cursor.close()
+
+
+
+        if conn:
+
+            conn.close()

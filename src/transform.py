@@ -1,165 +1,133 @@
 import logging
 
 
-logging.basicConfig(
-
-    filename="logs/etl.log",
-
-    level=logging.INFO,
-
-    format="%(asctime)s - %(levelname)s - %(message)s"
-
-)
+logger = logging.getLogger()
 
 
 
 def transform_data(df):
 
 
-    logging.info("Transformation started")
-
-    print("Checking Data Quality...")
+    logger.info("Transformation started")
 
 
-
-    # -------------------------
-    # Data Quality Check 1
-    # Missing values
-    # -------------------------
-
-    missing_values = df.isnull().sum().sum()
+    try:
 
 
-    print(
-        "Missing values:",
-        missing_values
-    )
+        # Missing value check
+
+        missing = df.isnull().sum().sum()
 
 
-    if missing_values > 0:
 
-        logging.warning(
+        if missing > 0:
 
-            f"Dataset contains {missing_values} missing values"
+
+            logger.warning(
+
+                f"{missing} missing values found"
+
+            )
+
+
+            df = df.fillna(0)
+
+
+
+        else:
+
+
+            logger.info(
+
+                "No missing values found"
+
+            )
+
+
+
+        # Duplicate check
+
+
+        duplicates = df.duplicated().sum()
+
+
+
+        if duplicates > 0:
+
+
+            logger.warning(
+
+                f"{duplicates} duplicate rows removed"
+
+            )
+
+
+            df = df.drop_duplicates()
+
+
+
+        else:
+
+
+            logger.info(
+
+                "No duplicates found"
+
+            )
+
+
+
+        # Data validation
+
+
+        if df["ORDER_ID"].isnull().any():
+
+
+            raise Exception(
+
+                "ORDER_ID contains null values"
+
+            )
+
+
+
+        # Feature engineering
+
+
+        df["TOTAL_SALES"] = (
+
+            df["QUANTITY"]
+
+            *
+
+            df["PRICE"]
 
         )
 
 
-    else:
 
-        logging.info(
+        logger.info(
 
-            "No missing values found"
-
-        )
-
-
-
-    # -------------------------
-    # Data Quality Check 2
-    # Duplicate rows
-    # -------------------------
-
-    duplicates = df.duplicated().sum()
-
-
-    print(
-
-        "Duplicate records:",
-        duplicates
-
-    )
-
-
-    if duplicates > 0:
-
-        logging.warning(
-
-            f"Found {duplicates} duplicate rows"
+            "Transformation completed"
 
         )
 
 
-    else:
+        print("Data Transformed")
 
-        logging.info(
 
-            "No duplicate records found"
+        return df
+
+
+
+    except Exception as e:
+
+
+        logger.error(
+
+            f"Transformation failed: {e}"
 
         )
 
 
-
-    # -------------------------
-    # Remove duplicates
-    # -------------------------
-
-    df = df.drop_duplicates()
-
-
-
-    logging.info(
-
-        "Duplicate records removed"
-
-    )
-
-
-
-    # -------------------------
-    # Handle missing values
-    # -------------------------
-
-    df = df.fillna(0)
-
-
-
-    logging.info(
-
-        "Missing values handled"
-
-    )
-
-
-
-    # -------------------------
-    # Feature Engineering
-    # Create TOTAL_SALES
-    # -------------------------
-
-    df["TOTAL_SALES"] = (
-
-        df["QUANTITY"]
-
-        *
-
-        df["PRICE"]
-
-    )
-
-
-
-    logging.info(
-
-        "TOTAL_SALES column created"
-
-    )
-
-
-
-    print(
-
-        "Transformation completed"
-
-    )
-
-
-
-    logging.info(
-
-        "Transformation completed successfully"
-
-    )
-
-
-    return df
+        raise e

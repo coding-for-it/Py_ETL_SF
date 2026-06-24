@@ -12,49 +12,75 @@ logger = get_logger()
 
 
 
-try:
+def run_pipeline():
 
 
-    logger.info(
-        "ETL Pipeline Started"
-    )
+    try:
 
 
-    print(
-        "ETL Pipeline Started"
-    )
+        logger.info(
+
+            "ETL Pipeline Started"
+
+        )
 
 
-    data = extract_data()
+        print(
 
+            "ETL Pipeline Started"
 
-
-    clean_data = transform_data(data)
-
-
-
-    load_data(clean_data)
+        )
 
 
 
-    logger.info(
-
-        "ETL Pipeline Completed"
-
-    )
-
-
-    print(
-
-        "ETL Pipeline Completed"
-
-    )
+        data = extract_data()
 
 
 
-except Exception as e:
+        clean_data = transform_data(data)
 
 
-    logger.error(e)
 
-    print(e)
+        load_data(clean_data)
+
+
+
+        logger.info(
+
+            "ETL Pipeline Completed"
+
+        )
+
+
+
+        print(
+
+            "ETL Pipeline Completed"
+
+        )
+
+
+
+    except Exception as e:
+
+
+
+        logger.error(e)
+
+
+        print(
+
+            "Pipeline Failed:",
+
+            e
+
+        )
+
+
+
+
+
+if __name__ == "__main__":
+
+
+    run_pipeline()
